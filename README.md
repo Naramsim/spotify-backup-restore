@@ -24,3 +24,5 @@ Browse http://127.0.0.1:36177/
 ### Issues
 
 The non-deprecated Spotify APIs are very poorly done and don't support ordering, thus saved tracks will be scrambled.
+
+Need Spotify premium and cannot support more than 5 users: https://developer.spotify.com/documentation/web-api/concepts/quota-modes
