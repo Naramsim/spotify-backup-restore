@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Export and import your Spotify playlists and tracks with a single click.">
+    <title>spotify backup restore</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+</head>
+<body>
+
+<div class="bg-gradient"></div>
+<div class="bg-noise"></div>
+
+<div class="app">
+    <div class="container">
+
+        <!-- Logo -->
+        <div class="logo-section">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.2.3-.56.4-.86.2-2.36-1.44-5.33-1.77-8.83-.97-.34.08-.67-.14-.75-.47-.08-.34.13-.67.47-.75 3.83-.87 7.12-.5 9.77 1.13.3.18.4.56.2.86zm1.22-2.72c-.24.38-.76.5-1.14.24-2.7-1.66-6.82-2.14-10.02-1.17-.42.12-.86-.1-.98-.52-.12-.42.1-.86.52-.98 3.65-1.1 8.18-.57 11.3 1.33.38.24.5.76.32 1.1zm.1-2.83c-3.24-1.93-8.58-2.1-11.68-1.16-.5.15-1.02-.13-1.17-.62-.15-.5.13-1.02.62-1.17 3.55-1.08 9.46-.87 13.2 1.34.46.27.6.86.34 1.32-.27.44-.86.6-1.31.29z"/></svg>
+                </div>
+                <div class="logo-text">My<span>Spot</span>Backup</div>
+            </div>
+            <div class="tagline">Backup & restore your Spotify library</div>
+        </div>
+
+        <!-- Login Panel -->
+        <div id="pnlLoggedOut" class="card login-section">
+            <div class="login-title">Connect Your Account</div>
+            <div class="login-desc">Securely connect with Spotify to export your playlists, saved tracks, and library into a backup file — or restore from a previous backup.</div>
+            <div class="feature-pills">
+                <span class="pill"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Export</span>
+                <span class="pill"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Import</span>
+                <span class="pill"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Playlists</span>
+                <span class="pill"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Saved Tracks</span>
+            </div>
+            <button id="login" class="btn btn-primary">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 14.36c-.2.3-.56.4-.86.2-2.36-1.44-5.33-1.77-8.83-.97-.34.08-.67-.14-.75-.47-.08-.34.13-.67.47-.75 3.83-.87 7.12-.5 9.77 1.13.3.18.4.56.2.86zm1.22-2.72c-.24.38-.76.5-1.14.24-2.7-1.66-6.82-2.14-10.02-1.17-.42.12-.86-.1-.98-.52-.12-.42.1-.86.52-.98 3.65-1.1 8.18-.57 11.3 1.33.38.24.5.76.32 1.1zm.1-2.83c-3.24-1.93-8.58-2.1-11.68-1.16-.5.15-1.02-.13-1.17-.62-.15-.5.13-1.02.62-1.17 3.55-1.08 9.46-.87 13.2 1.34.46.27.6.86.34 1.32-.27.44-.86.6-1.31.29z"/></svg>
+                Login with Spotify
+            </button>
+        </div>
+
+        <!-- Account / Loading Panel -->
+        <div id="pnlLoadingAccount" class="card account-section hidden">
+            <div class="account-header">
+                <div class="avatar" id="avatarLetter">?</div>
+                <div>
+                    <div class="account-label">Logged in as</div>
+                    <div class="account-name" id="userName"></div>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="loadingPlaylists">—</div>
+                    <div class="stat-label">Playlists</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="loadingTracks">—</div>
+                    <div class="stat-label">Tracks</div>
+                </div>
+            </div>
+            <div id="loadingTitle" class="status-msg"></div>
+        </div>
+
+        <!-- Action Panel -->
+        <div id="pnlAction" class="card actions hidden">
+            <div class="account-header" style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                <div class="avatar" id="actionAvatarLetter">?</div>
+                <div style="flex: 1;">
+                    <div class="account-label">Logged in as</div>
+                    <div class="account-name" id="actionUserName"></div>
+                </div>
+                <button id="btnLogout" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.9rem;">Logout</button>
+            </div>
+            <div class="action-grid">
+                <div id="btnExport" class="action-card action-export">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    </div>
+                    <div class="action-title">Export</div>
+                    <div class="action-desc">Save to file</div>
+                </div>
+                <div id="btnImport" class="action-card action-import">
+                    <div class="icon">
+                        <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"/></svg>
+                    </div>
+                    <div class="action-title">Import</div>
+                    <div class="action-desc">Restore backup</div>
+                </div>
+                <div id="btnClear" class="action-card action-clear" style="background: rgba(255,100,100,0.1);">
+                    <div class="icon" style="color: #ff6b6b;">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13z"/><path d="M9 8h2v9H9zm4 0h2v9h-2z"/></svg>
+                    </div>
+                    <div class="action-title" style="color: #ff6b6b;">Clear All</div>
+                    <div class="action-desc" style="color: rgba(255,255,255,0.6);">Delete library & playlists</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Panel -->
+        <div id="pnlImport" class="card import-section hidden">
+            <div id="pnlFile">
+                <div class="file-upload-area">
+                    <input type="file" id="fileImport"/>
+                    <div class="upload-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+                    </div>
+                    <p><strong>Click to select</strong> your backup file</p>
+                </div>
+            </div>
+            <div id="pnlFileInfo" class="hidden">
+                <div class="file-info">
+                    <div class="file-icon">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+                    </div>
+                    <div>
+                        <div class="file-name" id="fileName"></div>
+                        <div class="file-meta"><span id="filePlaylists">0</span> playlists · <span id="fileTracks">0</span> tracks</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload / Progress Panel -->
+        <div id="pnlUpload" class="card progress-section hidden">
+            <div class="progress-header">
+                <div class="progress-title">Importing</div>
+                <div class="progress-pct" id="progressPct">0%</div>
+            </div>
+            <div class="progress-bar-wrap">
+                <div id="progressBar" class="progress-bar-fill"></div>
+            </div>
+            <div class="progress-stats">
+                <div class="progress-stat">
+                    <div class="val"><span id="playlistStep">0</span>/<span id="playlistTotal">0</span></div>
+                    <div class="lbl">Playlists</div>
+                </div>
+                <div class="progress-stat">
+                    <div class="val"><span id="trackStep">0</span>/<span id="trackTotal">0</span></div>
+                    <div class="lbl">Tracks</div>
+                </div>
+            </div>
+            <div id="globalStep" class="progress-status"></div>
+        </div>
+
+    </div>
+</div>
+
+<script src="app.js"></script></body></html>
